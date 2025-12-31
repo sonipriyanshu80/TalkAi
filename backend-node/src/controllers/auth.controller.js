@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Company = require("../models/Company.model");
 const CompanyUser = require("../models/CompanyUser.model");
+const logger = require("../config/logger");
 
 exports.signup = async (req, res) => {
   try {
@@ -33,8 +34,19 @@ exports.signup = async (req, res) => {
       userId: user._id,
     });
   } catch (err) {
-    return res.status(500).json({ message: "Server error" });
-  }
+  logger.error("Auth operation failed", {
+    requestId: req.id,
+    error: err.message,
+    stack: err.stack,
+    email: req.body?.email
+  });
+
+  return res.status(500).json({
+    success: false,
+    message: "An unexpected error occurred. Please try again later.",
+    requestId: req.id
+  });
+}
 };
 
 exports.login = async (req, res) => {
@@ -59,6 +71,17 @@ exports.login = async (req, res) => {
 
     return res.json({ token });
   } catch (err) {
-    return res.status(500).json({ message: "Server error" });
-  }
+  logger.error("Auth operation failed", {
+    requestId: req.id,
+    error: err.message,
+    stack: err.stack,
+    email: req.body?.email
+  });
+
+  return res.status(500).json({
+    success: false,
+    message: "An unexpected error occurred. Please try again later.",
+    requestId: req.id
+  });
+}
 };

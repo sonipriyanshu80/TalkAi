@@ -39,8 +39,8 @@ const Dashboard = () => {
       const activeBots = [
         { name: 'Priyanshu', status: 'active', calls: callLogs.filter(c => c.botName === 'Priyanshu').length },
         { name: 'Tanmay', status: 'active', calls: callLogs.filter(c => c.botName === 'Tanmay').length },
-        { name: 'Ekta', status: 'active', calls: callLogs.filter(c => c.botName === 'Ekta').length },
-        { name: 'Priyanka', status: 'active', calls: callLogs.filter(c => c.botName === 'Priyanka').length }
+        { name: 'Priyanka', status: 'active', calls: callLogs.filter(c => c.botName === 'Priyanka').length },
+        { name: 'Ridhima', status: 'active', calls: callLogs.filter(c => c.botName === 'Ridhima').length }
       ];
 
       return {

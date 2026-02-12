@@ -420,10 +420,10 @@ const KnowledgeBase = () => {
                         style={{ color: '#667eea', fontSize: '20px', flexShrink: 0 }} 
                       />
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontWeight: '500', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div style={{ fontWeight: '500', marginBottom: '4px', wordBreak: 'break-word' }}>
                           {file.name}
                         </div>
-                        <div style={{ fontSize: 'clamp(11px, 2.5vw, 12px)', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div style={{ fontSize: 'clamp(11px, 2.5vw, 12px)', color: '#999', wordBreak: 'break-word' }}>
                           {file.size} • Uploaded {new Date(file.uploadedAt).toLocaleDateString()}
                         </div>
                       </div>

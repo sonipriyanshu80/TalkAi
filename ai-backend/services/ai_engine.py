@@ -1119,11 +1119,11 @@ class LightweightAIEngine:
         """Response for abusive content"""
         
         if language == 'hindi':
-            return "Main yahaan aapki madad karne ke liye hoon, lekin hamari baatcheet respectful honi chahiye. Agar aap aise baat karenge toh main call end karna padunga. Kya aap professionally baat karna chahte hain?"
+            return "Main yahaan aapki madad karne ke liye hoon, lekin hamari baatcheet respectful honi chahiye."
         elif language == 'hinglish':
-            return "I'm here to help you, but our conversation needs to be respectful. Agar aap aise baat karenge toh I'll have to end the call. Can we continue professionally?"
+            return "I'm here to help you, but our conversation needs to be respectful."
         else:
-            return "I'm here to help you, but I need our conversation to remain respectful. If you continue using inappropriate language, I'll have to end this call. Can we continue professionally?"
+            return "I'm here to help you, but I need our conversation to remain respectful."
     
     def _get_no_info_response(self, language: str, personality: str) -> str:
         """Response when no KB info found"""

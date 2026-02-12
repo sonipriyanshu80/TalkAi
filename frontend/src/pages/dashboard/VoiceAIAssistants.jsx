@@ -32,8 +32,8 @@ const VoiceAIAssistants = () => {
   const voices = [
     { name: 'priyanshu', gender: 'male', personality: 'Professional, Friendly', description: 'Warm but professional tone' },
     { name: 'tanmay', gender: 'male', personality: 'Casual, Energetic', description: 'Upbeat and conversational' },
-    { name: 'ekta', gender: 'female', personality: 'Formal, Polite', description: 'Very respectful and structured' },
-    { name: 'priyanka', gender: 'female', personality: 'Technical, Expert', description: 'Detailed technical explanations' }
+    { name: 'priyanka', gender: 'female', personality: 'Technical, Expert', description: 'Detailed technical explanations' },
+    { name: 'ridhima', gender: 'female', personality: 'Formal, Polite', description: 'Very respectful and structured' }
   ];
 
   const scrollToBottom = () => {
@@ -146,10 +146,10 @@ const VoiceAIAssistants = () => {
         'en-IN': "Hey there! I'm Tanmay, your energetic AI assistant! I'm super excited to help!",
         'hi-IN': "Hey! Main Tanmay hun, aapka energetic AI assistant! Main bahut excited hun!"
       },
-      ekta: {
-        auto: "Good day. I am Ekta, your formal and polite AI assistant.",
-        'en-IN': "Good day. I am Ekta, your formal and polite AI assistant.",
-        'hi-IN': "Namaskar. Main Ekta hun, aapki formal aur polite AI assistant."
+      ridhima: {
+        auto: "Good day. I am Ridhima, your formal and polite AI assistant.",
+        'en-IN': "Good day. I am Ridhima, your formal and polite AI assistant.",
+        'hi-IN': "Namaskar. Main Ridhima hun, aapki formal aur polite AI assistant."
       },
       priyanka: {
         auto: "Greetings. I'm Priyanka, your technical expert AI assistant.",

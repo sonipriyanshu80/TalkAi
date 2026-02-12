@@ -65,9 +65,8 @@ export const Input = ({
           style={{
             position: 'absolute',
             right: '10px',
-            top: 0,
-            bottom: 0,
-            margin: 'auto 0',
+            top: '50%',
+            transform: 'translateY(-50%)',
             height: '30px',
             width: '30px',
             background: 'none',
@@ -80,7 +79,8 @@ export const Input = ({
             justifyContent: 'center',
             zIndex: 2,
             transition: 'color 0.2s ease',
-            outline: 'none'
+            outline: 'none',
+            pointerEvents: 'auto'
           }}
           onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)'}
           onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)'}

@@ -1,7 +1,7 @@
 // API Configuration with Auto-Fallback
 const API_ENDPOINTS = {
   primary: {
-    node: 'https://talkai-node-backend.fly.dev',
+    node: 'https://talkai-production.up.railway.app',
     ai: 'https://talkai-ai-backend.fly.dev'
   },
   backup: {

@@ -1,7 +1,7 @@
-const { v4: uuidv4 } = require("uuid");
+const crypto = require('crypto');
 
 module.exports = (req, res, next) => {
-  req.id = req.headers["x-request-id"] || uuidv4();
+  req.id = req.headers["x-request-id"] || crypto.randomUUID();
   res.setHeader("X-Request-ID", req.id);
   next();
 };

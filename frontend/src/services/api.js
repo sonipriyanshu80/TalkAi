@@ -1,12 +1,13 @@
 import axios from 'axios';
-import { getBaseURL, handleRequestFailure, resetFailureCount, switchToBackup, getCurrentEndpoint } from './apiConfig';
 
 // Request cache for deduplication
 const requestCache = new Map();
 const CACHE_DURATION = 5000; // 5 seconds
 
 const api = axios.create({
-  baseURL: `${getBaseURL()}/api/v1`,
+  baseURL: process.env.NODE_ENV === 'production'
+    ? 'https://talkai-appo.onrender.com/api/v1'
+    : 'http://localhost:5000/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -50,25 +51,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor with cache cleanup and auto-fallback
+// Response interceptor with cache cleanup
 api.interceptors.response.use(
   (response) => {
-    // Resolve cache promise
     if (response.config._cacheResolve) {
       response.config._cacheResolve();
     }
     
-    // Reset failure count on success
-    resetFailureCount();
-    
-    // Clean up cache entry after response
     const cacheKey = `${response.config.method}:${response.config.url}:${JSON.stringify(response.config.params || {})}`;
     setTimeout(() => requestCache.delete(cacheKey), CACHE_DURATION);
     
     return response;
   },
   async (error) => {
-    // Clean up cache on error
     if (error.config) {
       const cacheKey = `${error.config.method}:${error.config.url}:${JSON.stringify(error.config.params || {})}`;
       requestCache.delete(cacheKey);
@@ -81,22 +76,6 @@ api.interceptors.response.use(
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
-      return Promise.reject(error);
-    }
-    
-    // Auto-fallback on network errors or 5xx errors
-    const isNetworkError = !error.response;
-    const isServerError = error.response?.status >= 500;
-    
-    if ((isNetworkError || isServerError) && !error.config._retry) {
-      const switched = handleRequestFailure();
-      
-      if (switched) {
-        // Update baseURL and retry
-        error.config._retry = true;
-        error.config.baseURL = `${getBaseURL()}/api/v1`;
-        return api.request(error.config);
-      }
     }
     
     return Promise.reject(error);
@@ -164,37 +143,21 @@ export const aiAPI = {
     api.put('/auth/update-profile', { name, companyName })
 };
 
-// Voice API functions with auto-fallback
+// Voice API functions
 export const voiceAPI = {
-  // Make voice call
   makeCall: async (callData) => {
-    const baseURL = getBaseURL();
+    const baseURL = process.env.NODE_ENV === 'production'
+      ? 'https://talkai-appo.onrender.com'
+      : 'http://localhost:5000';
     const token = localStorage.getItem('token');
 
-    try {
-      return await axios.post(`${baseURL}/api/voice/make-call`, callData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        timeout: 15000
-      });
-    } catch (error) {
-      // Try backup if primary fails
-      if (getCurrentEndpoint() === 'primary' && !error.config?._retry) {
-        switchToBackup();
-        
-        return axios.post(`${getBaseURL()}/api/voice/make-call`, callData, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          timeout: 15000,
-          _retry: true
-        });
-      }
-      throw error;
-    }
+    return axios.post(`${baseURL}/api/voice/make-call`, callData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      timeout: 15000
+    });
   }
 };
 

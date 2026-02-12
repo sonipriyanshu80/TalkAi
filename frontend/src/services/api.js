@@ -75,8 +75,9 @@ api.interceptors.response.use(
     }
     
     const isLoginRequest = error.config?.url?.includes('/auth/login');
+    const isChangePasswordRequest = error.config?.url?.includes('/auth/change-password');
 
-    if (error.response?.status === 401 && !isLoginRequest) {
+    if (error.response?.status === 401 && !isLoginRequest && !isChangePasswordRequest) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
@@ -152,7 +153,15 @@ export const aiAPI = {
     api.get('/analytics', { params: { days, botName } }),
 
   getLastCallTime: () =>
-    api.get('/analytics/last-call')
+    api.get('/analytics/last-call'),
+
+  // Change password
+  changePassword: (currentPassword, newPassword) =>
+    api.put('/auth/change-password', { currentPassword, newPassword }),
+
+  // Update profile
+  updateProfile: (name, companyName) =>
+    api.put('/auth/update-profile', { name, companyName })
 };
 
 // Voice API functions with auto-fallback

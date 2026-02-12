@@ -24,7 +24,7 @@ const Dashboard = () => {
       ]);
 
       const callLogs = callLogsRes.data.data?.callLogs || callLogsRes.data.data || [];
-      const knowledge = knowledgeRes.data.data || [];
+      const knowledge = (knowledgeRes.data.data || []).filter(file => !file.extractionFailed);
 
       // Calculate stats
       const today = new Date().toDateString();
@@ -183,8 +183,7 @@ const Dashboard = () => {
                         borderRadius: '8px',
                         textAlign: 'center'
                       }}>
-                        <div style={{ fontWeight: '500', marginBottom: '5px', color: '#fff' }}>{bot.name}</div>
-                        <div style={{ color: '#10b981', fontSize: '12px' }}>● {bot.calls} calls</div>
+                        <div style={{ fontWeight: '500', color: '#fff' }}>{bot.name}</div>
                       </div>
                     ))}
                   </div>

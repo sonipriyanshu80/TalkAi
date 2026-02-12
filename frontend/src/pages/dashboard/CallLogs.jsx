@@ -59,55 +59,55 @@ const CallLogs = () => {
   // Apply filters to call logs - MEMOIZED
   const filteredCallLogs = useMemo(() => {
     return callLogs.filter(call => {
-    // Search filter
-    if (debouncedSearch) {
-      const searchLower = debouncedSearch.toLowerCase();
-      const matchesSearch =
-        call.callId?.toLowerCase().includes(searchLower) ||
-        call.receiverNumber?.toLowerCase().includes(searchLower) ||
-        call.botName?.toLowerCase().includes(searchLower);
-      if (!matchesSearch) return false;
-    }
+      // Search filter
+      if (debouncedSearch) {
+        const searchLower = debouncedSearch.toLowerCase();
+        const matchesSearch =
+          call.callId?.toLowerCase().includes(searchLower) ||
+          call.receiverNumber?.toLowerCase().includes(searchLower) ||
+          call.botName?.toLowerCase().includes(searchLower);
+        if (!matchesSearch) return false;
+      }
 
-    // Status filter (AI/Human)
-    if (filters.status !== 'all') {
-      if (filters.status === 'ai' && call.handledBy !== 'AI') return false;
-      if (filters.status === 'human' && call.handledBy !== 'Human') return false;
-    }
+      // Status filter (AI/Human)
+      if (filters.status !== 'all') {
+        if (filters.status === 'ai' && call.handledBy !== 'AI') return false;
+        if (filters.status === 'human' && call.handledBy !== 'Human') return false;
+      }
 
-    // Channel Type filter (inbound/outbound)
-    if (filters.channelType !== 'all') {
-      // Assuming callerNumber starting with company number means outbound
-      const isOutbound = call.callerNumber?.includes('+18648104203');
-      if (filters.channelType === 'outbound' && !isOutbound) return false;
-      if (filters.channelType === 'inbound' && isOutbound) return false;
-    }
+      // Channel Type filter (inbound/outbound)
+      if (filters.channelType !== 'all') {
+        // Assuming callerNumber starting with company number means outbound
+        const isOutbound = call.callerNumber?.includes('+18648104203');
+        if (filters.channelType === 'outbound' && !isOutbound) return false;
+        if (filters.channelType === 'inbound' && isOutbound) return false;
+      }
 
-    // Call Transferred filter
-    if (filters.transferred !== 'all') {
-      const wasTransferred = call.escalationReason || call.handledBy === 'Human';
-      if (filters.transferred === 'yes' && !wasTransferred) return false;
-      if (filters.transferred === 'no' && wasTransferred) return false;
-    }
+      // Call Transferred filter
+      if (filters.transferred !== 'all') {
+        const wasTransferred = call.escalationReason || call.handledBy === 'Human';
+        if (filters.transferred === 'yes' && !wasTransferred) return false;
+        if (filters.transferred === 'no' && wasTransferred) return false;
+      }
 
-    // Duration filters
-    if (filters.minDuration && call.duration < parseInt(filters.minDuration)) return false;
-    if (filters.maxDuration && call.duration > parseInt(filters.maxDuration)) return false;
+      // Duration filters
+      if (filters.minDuration && call.duration < parseInt(filters.minDuration)) return false;
+      if (filters.maxDuration && call.duration > parseInt(filters.maxDuration)) return false;
 
-    // Date filters
-    if (filters.startDate) {
-      const callDate = new Date(call.createdAt).toDateString();
-      const startDate = new Date(filters.startDate).toDateString();
-      if (callDate < startDate) return false;
-    }
-    if (filters.endDate) {
-      const callDate = new Date(call.createdAt).toDateString();
-      const endDate = new Date(filters.endDate).toDateString();
-      if (callDate > endDate) return false;
-    }
+      // Date filters
+      if (filters.startDate) {
+        const callDate = new Date(call.createdAt).toDateString();
+        const startDate = new Date(filters.startDate).toDateString();
+        if (callDate < startDate) return false;
+      }
+      if (filters.endDate) {
+        const callDate = new Date(call.createdAt).toDateString();
+        const endDate = new Date(filters.endDate).toDateString();
+        if (callDate > endDate) return false;
+      }
 
-    return true;
-  });
+      return true;
+    });
   }, [callLogs, debouncedSearch, filters]);
 
   const totalPages = callLogsData?.data?.pagination?.pages || 0;
@@ -430,7 +430,7 @@ const CallLogs = () => {
                 {/* Table Header */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '1.5fr 1fr 1.2fr 1.2fr 1fr 1fr 1fr 1fr 1fr',
+                  gridTemplateColumns: '1.5fr 1fr 1.2fr 1.2fr 1fr 1fr 1fr 1fr 1.5fr',
                   gap: '15px',
                   padding: '15px 30px',
                   borderBottom: '1px solid rgba(255,255,255,0.1)',
@@ -463,7 +463,7 @@ const CallLogs = () => {
                   filteredCallLogs.map((call) => (
                     <div key={call._id} style={{
                       display: 'grid',
-                      gridTemplateColumns: '1.5fr 1fr 1.2fr 1.2fr 1fr 1fr 1fr 1fr 1fr',
+                      gridTemplateColumns: '1.5fr 1fr 1.2fr 1.2fr 1fr 1fr 1fr 1fr 1.5fr',
                       gap: '15px',
                       padding: '20px 30px',
                       borderBottom: '1px solid rgba(255,255,255,0.05)',
@@ -477,43 +477,31 @@ const CallLogs = () => {
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = 'transparent';
                       }}>
-                      <div style={{ marginBottom: '0', cursor: 'pointer' }} onClick={() => handleViewCall(call)}>
-                        <div style={{ color: '#fff', fontWeight: '500' }}>
-                          {formatDate(call.createdAt)}
-                        </div>
+                      <div style={{ cursor: 'pointer', color: '#fff', fontWeight: '500' }} onClick={() => handleViewCall(call)}>
+                        {formatDate(call.createdAt)}
                       </div>
 
-                      <div style={{ marginBottom: '0' }}>
-                        <div style={{ color: '#60a5fa', fontWeight: '500' }}>
-                          {call.handledBy === 'AI' ? (call.botName || 'TalkAI Agent') : 'Human Agent'}
-                        </div>
+                      <div style={{ color: '#60a5fa', fontWeight: '500' }}>
+                        {call.handledBy === 'AI' ? (call.botName || 'TalkAI Agent') : 'Human Agent'}
                       </div>
 
-                      <div style={{ marginBottom: '0' }}>
-                        <div style={{ color: '#999', fontFamily: 'monospace' }}>
-                          {call.callerNumber || '+18648104203'}
-                        </div>
+                      <div style={{ color: '#999', fontFamily: 'monospace' }}>
+                        {call.callerNumber || '+18648104203'}
                       </div>
 
-                      <div style={{ marginBottom: '0' }}>
-                        <div style={{ color: '#999', fontFamily: 'monospace' }}>
-                          {call.receiverNumber || 'N/A'}
-                        </div>
+                      <div style={{ color: '#999', fontFamily: 'monospace' }}>
+                        {call.receiverNumber || 'N/A'}
                       </div>
 
-                      <div style={{ marginBottom: '0' }}>
-                        <div style={{ color: '#fff' }}>
-                          {formatDuration(call.duration)}
-                        </div>
+                      <div style={{ color: '#fff' }}>
+                        {formatDuration(call.duration)}
                       </div>
 
-                      <div style={{ marginBottom: '0' }}>
-                        <div style={{ color: '#999' }}>
-                          Call
-                        </div>
+                      <div style={{ color: '#999' }}>
+                        Call
                       </div>
 
-                      <div style={{ marginBottom: '0' }}>
+                      <div>
                         <span style={{
                           padding: '4px 8px',
                           borderRadius: '12px',
@@ -525,93 +513,89 @@ const CallLogs = () => {
                         </span>
                       </div>
 
-                      <div style={{ marginBottom: '0' }}>
-                        <div style={{ color: '#4ade80' }}>
-                          ${(call.duration * 0.01).toFixed(2) || '0.00'}
-                        </div>
+                      <div style={{ color: '#4ade80' }}>
+                        ${(call.duration * 0.01).toFixed(2) || '0.00'}
                       </div>
 
-                      <div>
-                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                          <audio
-                            id={`audio-${call._id}`}
-                            style={{ display: 'none' }}
-                            onEnded={() => setPlayingAudio(prev => ({ ...prev, [call._id]: false }))}
-                            onError={(e) => {
-                              console.log('Audio failed to load');
-                              console.log('Audio error details:', e.target.error);
-                              console.log('Audio src:', e.target.src);
-                            }}
-                            crossOrigin="anonymous"
-                          />
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <audio
+                          id={`audio-${call._id}`}
+                          style={{ display: 'none' }}
+                          onEnded={() => setPlayingAudio(prev => ({ ...prev, [call._id]: false }))}
+                          onError={(e) => {
+                            console.log('Audio failed to load');
+                            console.log('Audio error details:', e.target.error);
+                            console.log('Audio src:', e.target.src);
+                          }}
+                          crossOrigin="anonymous"
+                        />
 
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            backgroundColor: '#2d2d2d',
-                            borderRadius: '20px',
-                            padding: '8px 12px',
-                            minWidth: '120px'
-                          }}>
-                            <button
-                              onClick={() => toggleAudio(call._id)}
-                              style={{
-                                width: '32px',
-                                height: '32px',
-                                borderRadius: '50%',
-                                border: 'none',
-                                backgroundColor: 'rgb(96, 165, 250)',
-                                color: '#fff',
-                                fontSize: '12px',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                              }}
-                            >
-                              <FontAwesomeIcon icon={playingAudio[call._id] ? faPause : faPlay} />
-                            </button>
-
-                            <div style={{
-                              flex: 1,
-                              height: '4px',
-                              backgroundColor: '#404040',
-                              borderRadius: '2px',
-                              overflow: 'hidden'
-                            }}>
-                              <div style={{
-                                height: '100%',
-                                backgroundColor: 'rgb(96, 165, 250)',
-                                width: '0%',
-                                borderRadius: '2px'
-                              }} />
-                            </div>
-
-                            <span style={{
-                              color: '#9ca3af',
-                              fontSize: '11px',
-                              fontFamily: 'monospace'
-                            }}>
-                              {formatDuration(call.duration)}
-                            </span>
-                          </div>
-
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          backgroundColor: '#2d2d2d',
+                          borderRadius: '20px',
+                          padding: '8px 12px',
+                          minWidth: '120px'
+                        }}>
                           <button
-                            onClick={() => downloadRecording(call._id)}
+                            onClick={() => toggleAudio(call._id)}
                             style={{
-                              padding: '8px',
+                              width: '32px',
+                              height: '32px',
                               borderRadius: '50%',
-                              border: '1px solid rgba(255,255,255,0.2)',
-                              backgroundColor: 'transparent',
-                              color: '#60a5fa',
+                              border: 'none',
+                              backgroundColor: 'rgb(96, 165, 250)',
+                              color: '#fff',
                               fontSize: '12px',
-                              cursor: 'pointer'
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
                             }}
                           >
-                            <FontAwesomeIcon icon={faDownload} />
+                            <FontAwesomeIcon icon={playingAudio[call._id] ? faPause : faPlay} />
                           </button>
+
+                          <div style={{
+                            flex: 1,
+                            height: '4px',
+                            backgroundColor: '#404040',
+                            borderRadius: '2px',
+                            overflow: 'hidden'
+                          }}>
+                            <div style={{
+                              height: '100%',
+                              backgroundColor: 'rgb(96, 165, 250)',
+                              width: '0%',
+                              borderRadius: '2px'
+                            }} />
+                          </div>
+
+                          <span style={{
+                            color: '#9ca3af',
+                            fontSize: '11px',
+                            fontFamily: 'monospace'
+                          }}>
+                            {formatDuration(call.duration)}
+                          </span>
                         </div>
+
+                        <button
+                          onClick={() => downloadRecording(call._id)}
+                          style={{
+                            padding: '8px',
+                            borderRadius: '50%',
+                            border: '1px solid rgba(255,255,255,0.2)',
+                            backgroundColor: 'transparent',
+                            color: '#60a5fa',
+                            fontSize: '12px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faDownload} />
+                        </button>
                       </div>
                     </div>
                   ))

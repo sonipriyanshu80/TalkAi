@@ -15,6 +15,7 @@ export const Input = ({
   disabled = false,
   rows,
   style = {},
+  autoComplete,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +24,9 @@ export const Input = ({
 
   const isPassword = type === 'password';
   const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
+
+  // Set default autocomplete for password fields
+  const autoCompleteValue = autoComplete || (isPassword ? 'current-password' : undefined);
 
   return (
     <div style={{ marginBottom: '20px', position: 'relative', ...style }}>
@@ -37,6 +41,7 @@ export const Input = ({
         rows={rows}
         required={required}
         disabled={disabled}
+        autoComplete={autoCompleteValue}
         style={{
           borderColor: hasError ? '#ef4444' : 'rgba(255, 255, 255, 0.1)',
           opacity: disabled ? 0.6 : 1,

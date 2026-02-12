@@ -29,7 +29,14 @@ const KnowledgeBase = () => {
         .map(file => ({
           id: file._id,
           name: file.title,
-          size: file.fileSize ? (file.fileSize / 1024 / 1024).toFixed(2) + ' MB' : '0.00 MB',
+          size: file.fileSize 
+            ? file.fileSize < 1024 
+              ? file.fileSize + ' B'
+              : file.fileSize < 1024 * 1024
+                ? (file.fileSize / 1024).toFixed(2) + ' KB'
+                : (file.fileSize / 1024 / 1024).toFixed(2) + ' MB'
+            : 'N/A',
+          fileSizeBytes: file.fileSize || 0,
           uploadedAt: file.createdAt,
           status: 'processed',
           type: file.category === 'website' ? 'website' : 'pdf',
@@ -37,9 +44,9 @@ const KnowledgeBase = () => {
         }));
       setUploadedFiles(files);
       
-      // Calculate storage used
-      const totalSize = files.reduce((sum, file) => sum + parseFloat(file.size), 0);
-      setStorageUsed(totalSize);
+      // Calculate storage used in MB
+      const totalBytes = files.reduce((sum, file) => sum + file.fileSizeBytes, 0);
+      setStorageUsed(totalBytes / 1024 / 1024);
     } catch (error) {
       console.error('Failed to load files:', error);
       toast.error('Failed to load knowledge base files');
@@ -154,7 +161,7 @@ const KnowledgeBase = () => {
     }
   };
 
-  const storagePercentage = (storageUsed / storageLimit) * 100;
+  const storagePercentage = storageUsed > 0 ? (storageUsed / storageLimit) * 100 : 0;
 
   return (
     <DashboardLayout>

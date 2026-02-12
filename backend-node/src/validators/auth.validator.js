@@ -50,6 +50,33 @@ const loginSchema = Joi.object({
   password: Joi.string().required()
 });
 
+const changePasswordSchema = Joi.object({
+  currentPassword: Joi.string().required().messages({
+    'string.empty': 'Current password is required'
+  }),
+  newPassword: Joi.string()
+    .min(8)
+    .max(128)
+    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]/)
+    .required()
+    .messages({
+      'string.empty': 'New password is required',
+      'string.min': 'New password must be at least 8 characters',
+      'string.pattern.base': 'New password must contain uppercase, lowercase, number, and special character'
+    })
+});
+
+const updateProfileSchema = Joi.object({
+  name: Joi.string().trim().min(2).max(50).optional().messages({
+    'string.min': 'Name must be at least 2 characters',
+    'string.max': 'Name cannot exceed 50 characters'
+  }),
+  companyName: Joi.string().trim().min(2).max(100).optional().messages({
+    'string.min': 'Company name must be at least 2 characters',
+    'string.max': 'Company name cannot exceed 100 characters'
+  })
+}).min(1);
+
 const validate = (schema) => (req, res, next) => {
   const { error } = schema.validate(req.body, { abortEarly: false });
   
@@ -69,5 +96,7 @@ const validate = (schema) => (req, res, next) => {
 
 module.exports = {
   validateSignup: validate(signupSchema),
-  validateLogin: validate(loginSchema)
+  validateLogin: validate(loginSchema),
+  validateChangePassword: validate(changePasswordSchema),
+  validateUpdateProfile: validate(updateProfileSchema)
 };

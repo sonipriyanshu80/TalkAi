@@ -196,24 +196,7 @@ const Analytics = () => {
         </div>
       </div>
 
-      {/* Analytics Tabs */}
-      <div className="glass" style={{ padding: '0', marginBottom: '30px', overflow: 'hidden' }}>
-        <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-          <button style={{
-            padding: '20px 30px',
-            background: 'transparent',
-            border: 'none',
-            color: 'white',
-            borderBottom: '2px solid #667eea',
-            fontSize: '16px',
-            fontWeight: '500'
-          }}>
-            Phone Call Analytics
-          </button>
-        </div>
-      </div>
-
-      {/* Key Metrics */}
+{/* Key Metrics */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '60px', color: '#999' }}>
           Loading analytics...

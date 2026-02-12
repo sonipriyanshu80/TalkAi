@@ -219,19 +219,18 @@ const VoiceAIAssistants = () => {
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: isMobile ? '1fr' : '2fr 1fr',
-          gap: '20px',
-          height: isMobile ? 'auto' : '70vh'
+          gap: '20px'
         }}>
           {/* Chat Interface */}
           <div className="glass" style={{ 
             padding: '0', 
             display: 'flex', 
             flexDirection: 'column',
-            height: isMobile ? '500px' : '100%'
+            height: isMobile ? '450px' : '500px'
           }}>
             <div style={{ 
               padding: '20px', 
-              borderBottom: '1px solid rgba(255,255,255,0.1)',
+              borderBottom: '1px solid rgba(102, 126, 234, 0.3)',
               display: 'flex',
               alignItems: 'center',
               gap: '10px'
@@ -244,10 +243,12 @@ const VoiceAIAssistants = () => {
             <div style={{ 
               flex: 1, 
               overflowY: 'auto', 
-              padding: '20px',
+              padding: isMobile ? '15px' : '20px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '15px'
+              justifyContent: messages.length <= 1 ? 'flex-end' : 'flex-start',
+              gap: isMobile ? '12px' : '15px',
+              minHeight: 0
             }}>
               {messages.map((message) => (
                 <div key={message.id} style={{
@@ -344,7 +345,7 @@ const VoiceAIAssistants = () => {
             {/* Input Area */}
             <div style={{ 
               padding: '20px', 
-              borderTop: '1px solid rgba(255,255,255,0.1)',
+              borderTop: '1px solid rgba(102, 126, 234, 0.3)',
               display: 'flex',
               gap: '10px',
               alignItems: 'flex-end'

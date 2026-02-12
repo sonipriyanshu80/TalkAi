@@ -177,4 +177,125 @@ exports.getMe = async (req, res) => {
   }
 };
 
+/**
+ * CHANGE PASSWORD
+ */
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.userId;
+
+    // Get user with password
+    const user = await CompanyUser.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Current password is incorrect"
+      });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    user.password = hashedPassword;
+    await user.save();
+
+    logger.info("Password changed successfully", {
+      requestId: req.id,
+      userId: user._id
+    });
+
+    return res.json({
+      success: true,
+      message: "Password changed successfully"
+    });
+  } catch (err) {
+    logger.error("Change password failed", {
+      requestId: req.id,
+      error: err.message,
+      userId: req.user?.userId
+    });
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred",
+      requestId: req.id
+    });
+  }
+};
+
+/**
+ * UPDATE PROFILE
+ */
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, companyName } = req.body;
+    const userId = req.user.userId;
+
+    const user = await CompanyUser.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // Update user name if provided
+    if (name) {
+      user.name = name;
+      await user.save();
+    }
+
+    // Update company name if provided
+    if (companyName) {
+      await Company.findByIdAndUpdate(user.companyId, { companyName });
+    }
+
+    // Get updated user data
+    const updatedUser = await CompanyUser.findById(userId)
+      .select('-password')
+      .populate('companyId', 'companyName');
+
+    logger.info("Profile updated successfully", {
+      requestId: req.id,
+      userId: user._id
+    });
+
+    return res.json({
+      success: true,
+      message: "Profile updated successfully",
+      user: {
+        id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        companyId: updatedUser.companyId._id,
+        companyName: updatedUser.companyId.companyName
+      }
+    });
+  } catch (err) {
+    logger.error("Update profile failed", {
+      requestId: req.id,
+      error: err.message,
+      userId: req.user?.userId
+    });
+
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred",
+      requestId: req.id
+    });
+  }
+};
+
 

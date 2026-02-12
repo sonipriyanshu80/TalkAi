@@ -7,10 +7,23 @@ export const validateField = (name, value) => {
         : 'Please enter a valid email address';
     
     case 'password':
+    case 'newPassword':
       if (!value) return 'Password is required';
-      return value.length >= 8 
-        ? '' 
-        : 'Password must be at least 8 characters';
+      if (value.length < 8) return 'Password must be at least 8 characters';
+      if (!/(?=.*[a-z])/.test(value)) return 'Password must contain a lowercase letter';
+      if (!/(?=.*[A-Z])/.test(value)) return 'Password must contain an uppercase letter';
+      if (!/(?=.*\d)/.test(value)) return 'Password must contain a number';
+      if (!/(?=.*[@$!%*?&#])/.test(value)) return 'Password must contain a special character (@$!%*?&#)';
+      return '';
+    
+    case 'currentPassword':
+      if (!value) return 'Current password is required';
+      return '';
+    
+    case 'confirmPassword':
+      // This will be handled separately with password comparison
+      if (!value) return 'Please confirm your password';
+      return '';
     
     case 'name':
       if (!value) return 'Name is required';

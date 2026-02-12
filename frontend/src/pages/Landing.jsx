@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeadset, faClipboardList, faHandshake, faShield, faBrain, faDatabase, faChartLine, faComments, faCode, faLock, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faHeadset, faClipboardList, faHandshake, faShield, faBrain, faDatabase, faChartLine, faComments, faCode, faLock, faBars, faTimes, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { fadeIn } from '../utils/animations';
 import { Card, Button } from '../components';
@@ -478,11 +478,15 @@ const Landing = () => {
                 }}
               >
                 <h3 style={{ fontSize: '18px', margin: 0 }}>How quickly can I deploy TalkAi?</h3>
-                <div style={{
-                  transform: openFaq === 0 ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s ease',
-                  fontSize: '20px'
-                }}>▼</div>
+                <FontAwesomeIcon 
+                  icon={faChevronDown} 
+                  style={{
+                    color: '#667eea',
+                    fontSize: '18px',
+                    transition: 'transform 0.3s ease',
+                    transform: openFaq === 0 ? 'rotate(180deg)' : 'rotate(0deg)'
+                  }}
+                />
               </div>
               {openFaq === 0 && (
                 <div style={{ padding: '0 30px 30px', color: '#999', lineHeight: '1.6' }}>
@@ -504,11 +508,15 @@ const Landing = () => {
                 }}
               >
                 <h3 style={{ fontSize: '18px', margin: 0 }}>Do I need technical knowledge to use TalkAi?</h3>
-                <div style={{
-                  transform: openFaq === 1 ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s ease',
-                  fontSize: '20px'
-                }}>▼</div>
+                <FontAwesomeIcon 
+                  icon={faChevronDown} 
+                  style={{
+                    color: '#667eea',
+                    fontSize: '18px',
+                    transition: 'transform 0.3s ease',
+                    transform: openFaq === 1 ? 'rotate(180deg)' : 'rotate(0deg)'
+                  }}
+                />
               </div>
               {openFaq === 1 && (
                 <div style={{ padding: '0 30px 30px', color: '#999', lineHeight: '1.6' }}>
@@ -530,11 +538,15 @@ const Landing = () => {
                 }}
               >
                 <h3 style={{ fontSize: '18px', margin: 0 }}>Can TalkAi integrate with my existing systems?</h3>
-                <div style={{
-                  transform: openFaq === 2 ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s ease',
-                  fontSize: '20px'
-                }}>▼</div>
+                <FontAwesomeIcon 
+                  icon={faChevronDown} 
+                  style={{
+                    color: '#667eea',
+                    fontSize: '18px',
+                    transition: 'transform 0.3s ease',
+                    transform: openFaq === 2 ? 'rotate(180deg)' : 'rotate(0deg)'
+                  }}
+                />
               </div>
               {openFaq === 2 && (
                 <div style={{ padding: '0 30px 30px', color: '#999', lineHeight: '1.6' }}>
@@ -556,11 +568,15 @@ const Landing = () => {
                 }}
               >
                 <h3 style={{ fontSize: '18px', margin: 0 }}>What kind of security measures are in place?</h3>
-                <div style={{
-                  transform: openFaq === 3 ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.3s ease',
-                  fontSize: '20px'
-                }}>▼</div>
+                <FontAwesomeIcon 
+                  icon={faChevronDown} 
+                  style={{
+                    color: '#667eea',
+                    fontSize: '18px',
+                    transition: 'transform 0.3s ease',
+                    transform: openFaq === 3 ? 'rotate(180deg)' : 'rotate(0deg)'
+                  }}
+                />
               </div>
               {openFaq === 3 && (
                 <div style={{ padding: '0 30px 30px', color: '#999', lineHeight: '1.6' }}>

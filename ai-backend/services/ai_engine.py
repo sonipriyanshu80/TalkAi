@@ -585,10 +585,10 @@ class SmartKBExtractor:
             sentence_lower = sentence.lower()
             score = 0
             
-            # Exact keyword matches
+            # Exact keyword matches (highest priority for user's actual question words)
             for keyword in keywords:
                 if keyword in sentence_lower:
-                    score += 2
+                    score += 3
             
             # Partial matches
             for keyword in keywords:
@@ -597,6 +597,11 @@ class SmartKBExtractor:
                     for word in sentence_words:
                         if keyword in word or word in keyword:
                             score += 1
+            
+            # Penalize header/metadata sentences (notice date, document date, etc.)
+            sentence_start = sentence_lower.strip()[:40]
+            if sentence_start.startswith('date:') or sentence_start.startswith('notice') or 'hereby informed' in sentence_start:
+                score -= 4
             
             # Position bonus (earlier sentences often have key info)
             position_bonus = max(0, 3 - idx)

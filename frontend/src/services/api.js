@@ -140,7 +140,26 @@ export const aiAPI = {
 
   // Update profile
   updateProfile: (name, companyName) =>
-    api.put('/auth/update-profile', { name, companyName })
+    api.put('/auth/update-profile', { name, companyName }),
+
+  // Phone numbers
+  importTwilio: (accountSid, authToken) =>
+    api.post('/phone-numbers/import-twilio', { accountSid, authToken }),
+
+  getPhoneNumbers: () =>
+    api.get('/phone-numbers'),
+
+  activatePhoneNumber: (id) =>
+    api.patch(`/phone-numbers/${id}/activate`),
+
+  deactivatePhoneNumber: (id) =>
+    api.patch(`/phone-numbers/${id}/deactivate`),
+
+  deletePhoneNumber: (id) =>
+    api.delete(`/phone-numbers/${id}`),
+
+  deleteTwilioAccount: () =>
+    api.delete('/phone-numbers/twilio/account')
 };
 
 // Voice API functions

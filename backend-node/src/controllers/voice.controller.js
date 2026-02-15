@@ -2,13 +2,42 @@ const twilio = require('twilio');
 const logger = require('../config/logger');
 const CallLog = require('../models/CallLog.model');
 const KnowledgeBase = require('../models/KnowledgeBase.model');
-const callDataService = require('../services/callData.service'); //  ADD THIS LINE
+const PhoneNumber = require('../models/PhoneNumber.model');
+const TwilioAccount = require('../models/TwilioAccount.model');
+const { decrypt } = require('../services/encryption.service');
+const callDataService = require('../services/callData.service');
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioNumber = process.env.TWILIO_PHONE_NUMBER;
 
-const client = twilio(accountSid, authToken);
+/**
+ * Get Twilio client for company (their account or TalkAi's default)
+ */
+async function getTwilioClientForCompany(companyId) {
+  try {
+    const activePhone = await PhoneNumber.findOne({ companyId, isActive: true, isDeleted: false });
+    
+    if (activePhone) {
+      const twilioAccount = await TwilioAccount.findById(activePhone.twilioAccountId);
+      if (twilioAccount) {
+        const decryptedSid = decrypt(twilioAccount.accountSid);
+        const decryptedToken = decrypt(twilioAccount.authToken);
+        return {
+          client: twilio(decryptedSid, decryptedToken),
+          phoneNumber: activePhone.phoneNumber
+        };
+      }
+    }
+  } catch (error) {
+    console.log('Using TalkAi default Twilio account:', error.message);
+  }
+  
+  return {
+    client: twilio(accountSid, authToken),
+    phoneNumber: twilioNumber
+  };
+}
 
 /**
  * Initiate AI voice call with custom information
@@ -78,7 +107,7 @@ exports.makeVoiceCall = async (req, res) => {
       companyId: req.user?.companyId,
       receiverName: req.body.receiverName,
       escalationNumber: escalationNumber || req.body.escalationNumber,
-      knowledgeBase: knowledgeBase, // Include PDF knowledge
+      knowledgeBase: knowledgeBase,
       voiceSettings: req.body.voiceSettings || {
         personality: 'priyanshu',
         language: 'auto',
@@ -87,15 +116,19 @@ exports.makeVoiceCall = async (req, res) => {
       }
     };
 
-    // Initiate the call (data will be stored in memory, not URL)
+    // Get company's Twilio client or use default
+    const { client, phoneNumber } = await getTwilioClientForCompany(req.user?.companyId);
+    console.log('Using phone number:', phoneNumber);
+
+    // Initiate the call
     const call = await client.calls.create({
       url: webhookUrl,
       to: formattedNumber,
-      from: twilioNumber,
+      from: phoneNumber,
       method: 'POST',
-      record: true, // Enable call recording
-      recordingStatusCallback: `${webhookUrl}/status`, // Recording callback
-      statusCallback: `${webhookUrl}/status`, // Add status callback
+      record: true,
+      recordingStatusCallback: `${webhookUrl}/status`,
+      statusCallback: `${webhookUrl}/status`,
       statusCallbackEvent: ['completed', 'failed', 'no-answer']
     });
     
@@ -112,7 +145,7 @@ exports.makeVoiceCall = async (req, res) => {
       await CallLog.create({
         companyId: req.user?.companyId || '507f1f77bcf86cd799439011',
         callId: call.sid,
-        callerNumber: twilioNumber,
+        callerNumber: phoneNumber,
         receiverNumber: formattedNumber,
         botName: botName,
         startTime: new Date(),
@@ -296,9 +329,12 @@ exports.handleVoiceResponse = async (req, res) => {
           dialNumber = dialNumber.startsWith('91') ? `+${dialNumber}` : `+91${dialNumber}`;
         }
         
+        // Get company's phone number for caller ID
+        const { phoneNumber: companyPhone } = await getTwilioClientForCompany(callData.companyId);
+        
         const dial = twiml.dial({
           timeout: 30,
-          callerId: twilioNumber
+          callerId: companyPhone
         });
         dial.number(dialNumber);
         

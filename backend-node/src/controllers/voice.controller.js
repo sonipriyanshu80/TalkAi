@@ -4,6 +4,8 @@ const CallLog = require('../models/CallLog.model');
 const KnowledgeBase = require('../models/KnowledgeBase.model');
 const PhoneNumber = require('../models/PhoneNumber.model');
 const TwilioAccount = require('../models/TwilioAccount.model');
+const Company = require('../models/Company.model');
+const Transaction = require('../models/Transaction.model');
 const { decrypt } = require('../services/encryption.service');
 const callDataService = require('../services/callData.service');
 
@@ -47,6 +49,20 @@ exports.makeVoiceCall = async (req, res) => {
     // Security: Remove sensitive data from logs in production
     if (process.env.NODE_ENV === 'development') {
       console.log('User from req:', { userId: req.user?.userId, role: req.user?.role });
+    }
+    
+    // Check balance before call
+    const company = await Company.findById(req.user?.companyId);
+    if (!company) {
+      return res.status(404).json({ success: false, message: 'Company not found' });
+    }
+    
+    if (company.balance < 10) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Insufficient balance. Please top up to continue.',
+        balance: company.balance
+      });
     }
     
     const { 
@@ -656,13 +672,70 @@ exports.handleCallStatus = async (req, res) => {
       // Get conversation history before cleanup
       const conversationHistory = callDataService.getConversationHistory(CallSid);
       
+      // Get call log to find company
+      const callLog = await CallLog.findOne({ callId: CallSid });
+      
+      if (callLog && CallStatus === 'completed' && CallDuration) {
+        const durationMinutes = parseInt(CallDuration) / 60;
+        
+        // Check if using TalkAi number or own number
+        const activePhone = await PhoneNumber.findOne({ 
+          companyId: callLog.companyId, 
+          isActive: true, 
+          isDeleted: false 
+        });
+        
+        const rate = activePhone ? 1.5 : 4; // ₹1.5 for own number, ₹4 for TalkAi number
+        const cost = durationMinutes * rate;
+        
+        // Deduct from balance
+        const company = await Company.findById(callLog.companyId);
+        if (company) {
+          const balanceBefore = company.balance;
+          const balanceAfter = balanceBefore - cost;
+          
+          await Company.findByIdAndUpdate(callLog.companyId, {
+            $inc: { balance: -cost, minutesUsed: durationMinutes }
+          });
+          
+          // Create transaction record
+          await Transaction.create({
+            companyId: callLog.companyId,
+            type: 'call_deduction',
+            amount: -cost,
+            balanceBefore,
+            balanceAfter,
+            callId: CallSid,
+            description: `Call to ${callLog.receiverNumber} (${durationMinutes.toFixed(2)} mins @ ₹${rate}/min)`,
+            status: 'success'
+          });
+          
+          console.log(`Deducted ₹${cost.toFixed(2)} from company ${callLog.companyId}`);
+        }
+      }
+      
       // Update call log with final status, recording, and transcript
       try {
         const updateData = { 
           endTime: new Date(),
           duration: CallDuration ? parseInt(CallDuration) : null,
-          status: CallStatus
+          status: CallStatus,
+          cost: 0,
+          rate: 0
         };
+        
+        // Calculate cost if completed
+        if (CallStatus === 'completed' && CallDuration) {
+          const durationMinutes = parseInt(CallDuration) / 60;
+          const activePhone = await PhoneNumber.findOne({ 
+            companyId: callLog.companyId, 
+            isActive: true, 
+            isDeleted: false 
+          });
+          const rate = activePhone ? 1.5 : 4;
+          updateData.cost = durationMinutes * rate;
+          updateData.rate = rate;
+        }
         
         // Add recording URL if available
         if (RecordingUrl) {

@@ -569,9 +569,9 @@ class SmartKBExtractor:
         stop_words = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
                       'of', 'with', 'is', 'are', 'was', 'were', 'what', 'how', 'when', 
                       'where', 'why', 'who', 'which', 'tell', 'me', 'about', 'your', 
-                      'kya', 'hai', 'kaise', 'batao', 'give', 'get', 'any', 'some'}
+                      'kya', 'hai', 'kaise', 'batao', 'give', 'get', 'any', 'some', 'the'}
         
-        keywords = [w for w in question_words if len(w) > 3 and w not in stop_words]
+        keywords = [w for w in question_words if len(w) > 2 and w not in stop_words]
         
         if not keywords:
             first_sentence = sentences[0]
@@ -584,6 +584,12 @@ class SmartKBExtractor:
         for idx, sentence in enumerate(sentences):
             sentence_lower = sentence.lower()
             score = 0
+            
+            # Boost score for date/time patterns when user asks about date/time
+            if any(word in question_lower for word in ['date', 'when', 'time', 'kab']):
+                # Look for date patterns (01 February, 27.01.2026, etc.)
+                if re.search(r'\d{1,2}[\s/.-]\w+[\s/.-]\d{2,4}|\d{1,2}:\d{2}\s*(?:am|pm|AM|PM)', sentence_lower):
+                    score += 10
             
             # Exact keyword matches (highest priority for user's actual question words)
             for keyword in keywords:

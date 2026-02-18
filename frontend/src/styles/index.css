@@ -127,6 +127,22 @@ select.input option:hover {
   background: #333333;
 }
 
+/* Apply to all select elements */
+select {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: white !important;
+}
+
+select option {
+  background: #1a1a1a !important;
+  color: white !important;
+  padding: 8px;
+}
+
+select option:checked {
+  background: #333333 !important;
+}
+
 /* Animation keyframes */
 @keyframes fadeIn {
   to {

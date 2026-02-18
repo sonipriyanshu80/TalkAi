@@ -84,7 +84,11 @@ out/
 # AI Models (if downloaded locally)
 *.bin
 *.safetensors
-models/
+# Only ignore AI model directories, not source code models
+ai-models/
+*.model
+*.pt
+*.pth
 
 # Database
 *.db

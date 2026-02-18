@@ -514,7 +514,7 @@ const CallLogs = () => {
                       </div>
 
                       <div style={{ color: '#4ade80' }}>
-                        ${(call.duration * 0.01).toFixed(2) || '0.00'}
+                        ₹{call.cost?.toFixed(2) || '0.00'}
                       </div>
 
                       <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>

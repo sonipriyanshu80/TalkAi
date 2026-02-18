@@ -31,6 +31,8 @@ const CallLogSchema = new mongoose.Schema(
     recordingUrl: { type: String },
     recordingSid: { type: String },
     status: { type: String },
+    cost: { type: Number, default: 0 },
+    rate: { type: Number, default: 4 },
   },
   { timestamps: true }
 );

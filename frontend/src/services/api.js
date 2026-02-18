@@ -159,7 +159,23 @@ export const aiAPI = {
     api.delete(`/phone-numbers/${id}`),
 
   deleteTwilioAccount: () =>
-    api.delete('/phone-numbers/twilio/account')
+    api.delete('/phone-numbers/twilio/account'),
+
+  // Billing
+  getBalance: () =>
+    api.get('/billing/balance'),
+
+  getPlans: () =>
+    api.get('/billing/plans'),
+
+  createOrder: (amount, type, planId) =>
+    api.post('/billing/create-order', { amount, type, planId }),
+
+  verifyPayment: (razorpay_order_id, razorpay_payment_id, razorpay_signature, planId) =>
+    api.post('/billing/verify-payment', { razorpay_order_id, razorpay_payment_id, razorpay_signature, planId }),
+
+  getTransactions: (page, limit) =>
+    api.get('/billing/transactions', { params: { page, limit } })
 };
 
 // Voice API functions

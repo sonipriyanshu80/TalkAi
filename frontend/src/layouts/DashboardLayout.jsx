@@ -6,12 +6,14 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faCog, faCreditCard, faSignOutAlt, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { aiAPI } from '../services/api';
 
 const DashboardLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [desktopSidebarExpanded, setDesktopSidebarExpanded] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [balance, setBalance] = useState(null);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -23,6 +25,21 @@ const DashboardLayout = ({ children }) => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Fetch balance
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const { data } = await aiAPI.getBalance();
+        setBalance(data);
+      } catch (error) {
+        console.error('Failed to fetch balance:', error);
+      }
+    };
+    fetchBalance();
+    const interval = setInterval(fetchBalance, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -64,6 +81,40 @@ const DashboardLayout = ({ children }) => {
 
         {/* Spacer for desktop */}
         {!isMobile && <div />}
+
+        {/* Balance & Profile */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <div 
+            onClick={() => navigate('/balance-plans')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '6px 12px',
+              background: 'rgba(102, 126, 234, 0.1)',
+              border: '1px solid rgba(102, 126, 234, 0.3)',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(102, 126, 234, 0.2)';
+              e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(102, 126, 234, 0.1)';
+              e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.3)';
+            }}
+          >
+            <FontAwesomeIcon icon={faCreditCard} style={{ color: '#667eea', fontSize: '14px' }} />
+            <span style={{ 
+              fontSize: '14px', 
+              fontWeight: '600',
+              color: (balance?.balance || 0) < 50 ? '#ef4444' : '#10b981'
+            }}>
+              ₹{balance?.balance?.toFixed(2) || '0.00'}
+            </span>
+          </div>
 
         {/* Profile Dropdown */}
         <div style={{ position: 'relative' }}>
@@ -227,6 +278,7 @@ const DashboardLayout = ({ children }) => {
               </div>
             </div>
           )}
+        </div>
         </div>
       </div>
 

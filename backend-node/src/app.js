@@ -16,6 +16,7 @@ const callLogsRoutes = require("./routes/callLogs.routes");
 const analyticsRoutes = require("./routes/analytics.routes");
 const healthRoutes = require("./routes/health.routes");
 const phoneRoutes = require("./routes/phone.routes");
+const billingRoutes = require("./routes/billing.routes");
 
 const app = express();
 app.set("trust proxy", 1);
@@ -33,6 +34,7 @@ app.use("/api/v1/ai", aiRoutes);
 app.use("/api/v1/ai", callLogsRoutes);
 app.use("/api/v1/analytics", analyticsRoutes);
 app.use("/api/v1/phone-numbers", phoneRoutes);
+app.use("/api/v1/billing", billingRoutes);
 app.use("/api/voice", voiceRoutes);
 app.use("/health", healthRoutes);
 

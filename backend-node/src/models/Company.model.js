@@ -30,6 +30,17 @@ const CompanySchema = new mongoose.Schema(
     minutesUsed: { type: Number, default: 0 },
     minutesLimit: { type: Number, default: 0 },
 
+    balance: { type: Number, default: 30 },
+    currentPlanId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Plan',
+      default: null
+    },
+    kbUsedMB: { type: Number, default: 0 },
+    subscriptionStartDate: { type: Date, default: null },
+    subscriptionEndDate: { type: Date, default: null },
+    autoRenew: { type: Boolean, default: false },
+
     status: {
       type: String,
       enum: ["active", "suspended"],

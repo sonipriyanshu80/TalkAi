@@ -207,7 +207,16 @@ const BalancePlans = () => {
         
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 'clamp(15px, 3vw, 20px)' }}>
           {plans.map((plan) => {
-            const isCurrentPlan = balance?.currentPlan?._id === plan._id;
+            // Check if this is the current plan or if it's Free and no current plan is set
+            const isCurrentPlan = balance?.currentPlan?._id === plan._id || 
+                                 (!balance?.currentPlan && plan.planName === 'Free');
+            console.log('Plan comparison:', {
+              planId: plan._id,
+              planName: plan.planName,
+              currentPlanId: balance?.currentPlan?._id,
+              currentPlanName: balance?.currentPlan?.planName,
+              isCurrentPlan
+            });
             return (
             <div 
               key={plan._id} 

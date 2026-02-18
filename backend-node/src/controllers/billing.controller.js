@@ -4,10 +4,14 @@ const Company = require('../models/Company.model');
 const Plan = require('../models/Plan.model');
 const Transaction = require('../models/Transaction.model');
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+// Initialize Razorpay only if keys are available
+let razorpay = null;
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+  });
+}
 
 exports.getBalance = async (req, res) => {
   try {
@@ -49,6 +53,10 @@ exports.getPlans = async (req, res) => {
 
 exports.createOrder = async (req, res) => {
   try {
+    if (!razorpay) {
+      return res.status(503).json({ message: 'Payment service not configured' });
+    }
+
     const { amount, type, planId } = req.body;
     const companyId = req.user.companyId;
 
@@ -85,6 +93,10 @@ exports.createOrder = async (req, res) => {
 
 exports.verifyPayment = async (req, res) => {
   try {
+    if (!razorpay) {
+      return res.status(503).json({ message: 'Payment service not configured' });
+    }
+
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, planId } = req.body;
     const companyId = req.user.companyId;
 
@@ -180,13 +192,18 @@ exports.getTransactions = async (req, res) => {
 
     const transactions = await Transaction.find({ 
       companyId,
-      status: 'success' // Only show successful transactions
+      status: 'success',
+      type: { $in: ['topup', 'subscription'] } // Only show billing transactions, not call deductions
     })
       .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit);
 
-    const count = await Transaction.countDocuments({ companyId, status: 'success' });
+    const count = await Transaction.countDocuments({ 
+      companyId, 
+      status: 'success',
+      type: { $in: ['topup', 'subscription'] }
+    });
 
     res.json({
       transactions,

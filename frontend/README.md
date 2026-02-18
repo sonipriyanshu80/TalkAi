@@ -1,16 +1,74 @@
-# React + Vite
+# Frontend - React Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React.js web application for TalkAi management dashboard with modern UI components.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+## Build
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm run build
+npm run preview
+```
 
-## Expanding the ESLint configuration
+## Technology Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **React 18** with Vite for fast development
+- **React Router** for navigation
+- **Context API** for state management
+- **CSS Modules** with responsive design
+- **FontAwesome** icons
+- **Recharts** for analytics visualization
+- **React DatePicker** for date selection
+
+## Features
+
+### Dashboard Pages
+- **Overview** - Key metrics and recent activity
+- **Call Logs** - Call history with filtering and search
+- **Analytics** - Charts and performance metrics
+- **Balance & Plans** - Subscription management and billing
+- **Knowledge Base** - Document upload and management
+- **Settings** - Company profile and voice configuration
+
+### Components
+- Responsive layout with mobile support
+- Real-time data updates
+- Interactive charts and graphs
+- File upload with drag-and-drop
+- Toast notifications
+- Modal dialogs
+- Form validation
+
+### Authentication
+- JWT token management
+- Protected routes
+- Auto-logout on token expiry
+- Company-scoped data access
+
+## Environment Variables
+
+```
+VITE_API_URL=http://localhost:5000
+VITE_AI_API_URL=http://localhost:8000
+```
+
+## Deployment
+
+- **Development**: `npm run dev`
+- **Production**: Deployed on Vercel
+- **Build Output**: Static files in `dist/`
+
+## Project Structure
+
+- `src/components/` - Reusable UI components
+- `src/pages/` - Dashboard page components
+- `src/layouts/` - Layout wrappers
+- `src/services/` - API integration
+- `src/contexts/` - React context providers
+- `src/styles/` - Global CSS and themes

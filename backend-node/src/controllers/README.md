@@ -1,22 +1,51 @@
 # Controllers
 
-API request handlers for authentication and knowledge management.
+API request handlers containing business logic for each feature module.
 
 ## Files
 
-- `auth.controller.js` - User signup and login with JWT tokens
-- `knowledge.controller.js` - CRUD operations for knowledge base items
+- `auth.controller.js` - User authentication and company registration
+- `billing.controller.js` - Payment processing and subscription management
+- `analytics.controller.js` - Call metrics and performance analytics
+- `voice.controller.js` - Twilio webhook handling and call processing
+- `knowledge.controller.js` - Knowledge base CRUD operations
 
-## Auth Controller
+## Controller Responsibilities
 
-- `POST /signup` - Company and admin user creation (atomic transaction)
-- `POST /login` - User authentication with JWT token
+### Authentication Controller
+- Company and user creation with validation
+- JWT token generation and validation
+- Password hashing and verification
+- Email notifications for new accounts
 
-## Knowledge Controller
+### Billing Controller
+- Razorpay order creation and verification
+- Subscription plan management
+- Balance tracking and deductions
+- Transaction history and reporting
+- Payment webhook processing
 
-- `POST /` - Create knowledge base item
-- `GET /` - List items with pagination and search
-- `PUT /:id` - Update knowledge item
-- `DELETE /:id` - Soft delete knowledge item
+### Analytics Controller
+- Call volume and duration calculations
+- Date-based filtering and aggregation
+- Performance metrics generation
+- Real-time data updates
 
-All knowledge operations are scoped to the authenticated user's company.
+### Voice Controller
+- Twilio webhook request processing
+- Call logging and duration tracking
+- AI backend integration for responses
+- Call cost calculation and billing
+
+### Knowledge Controller
+- PDF upload and text extraction
+- Content chunking for AI processing
+- Search and pagination logic
+- Company-scoped data access
+
+## Common Patterns
+
+- **Error Handling**: Try-catch blocks with structured error responses
+- **Data Validation**: Input sanitization and business rule validation
+- **Company Isolation**: All operations scoped to authenticated user's company
+- **Logging**: Request tracking and error logging for debugging

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const KnowledgeBase = require("../models/KnowledgeBase.model");
+const Company = require("../models/Company.model");
 const fs = require('fs');
 const pdfParse = require('pdf-parse');
 
@@ -16,6 +17,13 @@ exports.createItem = async (req, res, next) => {
       content,
       category
     });
+
+    // Update company KB usage
+    const contentSizeKB = Buffer.byteLength(content, 'utf8') / 1024;
+    await Company.findByIdAndUpdate(
+      req.user.companyId,
+      { $inc: { kbUsedMB: contentSizeKB / 1024 } }
+    );
 
     res.status(201).json({
       success: true,
@@ -223,6 +231,13 @@ exports.uploadPDF = async (req, res, next) => {
       useInCalls: !extractionFailed,
       extractionFailed: extractionFailed
     });
+    
+    // Update company KB usage
+    const fileSizeMB = req.file.size / (1024 * 1024);
+    await Company.findByIdAndUpdate(
+      req.user.companyId,
+      { $inc: { kbUsedMB: fileSizeMB } }
+    );
     
     res.status(201).json({
       success: !extractionFailed,

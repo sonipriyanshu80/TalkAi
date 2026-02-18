@@ -189,9 +189,13 @@ const Analytics = () => {
             style={{ width: '200px' }}
           >
             <option value="all">All Assistants</option>
-            {assistants.map(bot => (
-              <option key={bot} value={bot}>{bot}</option>
-            ))}
+            {assistants.map(bot => {
+              // Map old names to new names
+              const displayName = bot === 'Etka' || bot === 'Ekta' ? 'Ridhima' : bot;
+              return (
+                <option key={bot} value={bot}>{displayName}</option>
+              );
+            })}
           </select>
         </div>
       </div>

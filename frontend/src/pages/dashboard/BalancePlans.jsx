@@ -180,7 +180,7 @@ const BalancePlans = () => {
             </div>
             <div style={{ fontSize: '14px', color: '#999' }}>
               <p>Minutes used: {balance?.minutesUsed?.toFixed(2) || 0}</p>
-              <p>KB used: {balance?.kbUsedMB || 0} MB</p>
+              <p>KB used: {(balance?.kbUsedMB || 0).toFixed(2)} MB</p>
             </div>
           </div>
           
@@ -206,17 +206,10 @@ const BalancePlans = () => {
         <p style={{ color: '#999', fontSize: '14px', marginBottom: '30px' }}>Choose the plan that fits your needs</p>
         
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 'clamp(15px, 3vw, 20px)' }}>
-          {plans.map((plan) => {
-            // Check if this is the current plan or if it's Free and no current plan is set
+          {plans.map((plan, index) => {
+            // Show first plan as current if no plan is set, otherwise match by ID
             const isCurrentPlan = balance?.currentPlan?._id === plan._id || 
-                                 (!balance?.currentPlan && plan.planName === 'Free');
-            console.log('Plan comparison:', {
-              planId: plan._id,
-              planName: plan.planName,
-              currentPlanId: balance?.currentPlan?._id,
-              currentPlanName: balance?.currentPlan?.planName,
-              isCurrentPlan
-            });
+                                 (!balance?.currentPlan && index === 0);
             return (
             <div 
               key={plan._id} 

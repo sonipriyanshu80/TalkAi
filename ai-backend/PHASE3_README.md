@@ -1,4 +1,99 @@
-# 🚀 Phase 3: Enhanced Python AI Features
+# AI Backend - Python FastAPI
+
+Python FastAPI service for AI-powered voice processing with LLM integration and conversation management.
+
+## Setup
+
+```bash
+cd ai-backend
+pip install -r requirements.txt
+uvicorn app:app --reload --port 8000
+```
+
+## Environment Variables
+
+```bash
+# Optional - System works without OpenAI using enhanced templates
+OPENAI_API_KEY=your_openai_key
+```
+
+## Features
+
+### Language Processing
+- **Multi-language Detection**: English, Hindi, and Hinglish support
+- **Confidence Scoring**: Reliability metrics for language detection
+- **Context-aware Switching**: Dynamic language adaptation
+
+### AI Response Generation
+- **LLM Integration**: OpenAI GPT-3.5 for contextual responses
+- **Fallback System**: Enhanced templates when LLM unavailable
+- **Conversation Memory**: Context retention across call exchanges
+- **Personality Engine**: Dynamic personality traits (Priyanshu, Ridhima)
+
+### Voice Processing
+- **Speech-to-Text**: Audio transcription
+- **Text-to-Speech**: Voice synthesis with multiple voices
+- **Sentiment Analysis**: Real-time emotion detection
+- **Intent Classification**: Advanced understanding of user needs
+
+## API Endpoints
+
+### Voice Processing
+- `POST /voice/process` - Process voice calls with AI responses
+- `GET /voice/health` - Service health check
+
+### AI Chat
+- `POST /ai/chat` - Text-based AI conversation
+- `GET /ai/stats` - API usage statistics
+
+## Architecture
+
+```
+AI Engine
+├── app.py                    # FastAPI application
+├── routers/
+│   ├── voice_router.py       # Voice call endpoints
+│   ├── ai_router.py          # Chat endpoints
+│   └── health_router.py      # Health checks
+├── services/
+│   ├── ai_engine.py          # Main AI orchestrator
+│   ├── llm_service.py        # LLM integration
+│   ├── stt_service.py        # Speech-to-text
+│   └── tts_service.py        # Text-to-speech
+└── models/
+    └── schemas.py            # Pydantic request/response models
+```
+
+## Response Format
+
+```json
+{
+  "ai_response": "How can I help you today?",
+  "detected_language": "english",
+  "language_confidence": 0.95,
+  "sentiment": {
+    "label": "neutral",
+    "score": 0.7
+  },
+  "personality": "ridhima",
+  "context_used": true,
+  "intent": "greeting",
+  "should_escalate": false
+}
+```
+
+## Integration
+
+- **Node.js Backend**: Seamless API integration
+- **Twilio**: Voice call processing
+- **MongoDB**: Conversation logging
+- **Real-time Processing**: Sub-second response times
+
+## Deployment
+
+- **Development**: `uvicorn app:app --reload --port 8000`
+- **Production**: Deployed on Render
+- **Scaling**: Horizontal scaling support
 
 ## Overview
 Phase 3 transforms the TalkAI Python backend from basic template responses to a truly dynamic and intelligent AI system powered by advanced language processing, LLM integration, and conversation memory.

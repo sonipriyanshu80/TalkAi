@@ -110,9 +110,6 @@ const PhoneNumbers = () => {
           <Button onClick={() => setShowImportModal(true)}>
             Import from Twilio
           </Button>
-          <Button variant="secondary" onClick={() => toast.info('Exotel integration coming soon!')}>
-            Import from Exotel
-          </Button>
         </div>
       </Card>
 

@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUpload, faGlobe, faFile, faTrash, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faUpload, faFile, faTrash, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { toast } from '../../components/Toast';
 import { aiAPI } from '../../services/api';
 
 const KnowledgeBase = () => {
-  const [websiteUrl, setWebsiteUrl] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [storageUsed, setStorageUsed] = useState(0); // MB
-  const [storageLimit] = useState(10.0); // MB
+  const [storageUsed, setStorageUsed] = useState(0);
+  const [storageLimit] = useState(10.0);
   const [loading, setLoading] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
@@ -102,23 +101,6 @@ const KnowledgeBase = () => {
     }
   };
 
-  const handleWebsiteAdd = async () => {
-    if (!websiteUrl) {
-      toast.error('Please enter a website URL');
-      return;
-    }
-    
-    try {
-      await aiAPI.addWebsite(websiteUrl);
-      setWebsiteUrl('');
-      toast.success('Website content added to knowledge base!');
-      // Reload files to get updated list
-      await loadFiles();
-    } catch (error) {
-      toast.error('Failed to add website content');
-    }
-  };
-
   const handleDeleteFile = async (fileId) => {
     try {
       await aiAPI.deleteKnowledgeFile(fileId);
@@ -191,7 +173,7 @@ const KnowledgeBase = () => {
             Knowledge Base
           </h1>
           <p style={{ color: '#999', fontSize: 'clamp(14px, 3vw, 16px)' }}>
-            Upload PDFs and add website content to enhance your AI assistant's knowledge
+            Upload PDFs to enhance your AI assistant's knowledge
           </p>
         </div>
 
@@ -263,37 +245,6 @@ const KnowledgeBase = () => {
                 style={{ display: 'none' }}
               />
             </div>
-          </div>
-
-          {/* Website Knowledge Base */}
-          <div className="glass" style={{ padding: '20px' }}>
-            <h3 style={{ fontSize: '16px', marginBottom: '8px' }}>Website Knowledge Base</h3>
-            <p style={{ color: '#999', fontSize: '12px', marginBottom: '15px' }}>
-              Add website content to your assistant's knowledge base
-            </p>
-            
-            <div style={{ marginBottom: '10px' }}>
-              <label style={{ display: 'block', marginBottom: '6px', fontSize: '12px', color: '#999' }}>
-                Website URL
-              </label>
-              <input
-                type="url"
-                placeholder="https://example.com/"
-                value={websiteUrl}
-                onChange={(e) => setWebsiteUrl(e.target.value)}
-                className="input"
-                style={{ width: '100%', marginBottom: '10px' }}
-              />
-            </div>
-            <button 
-              onClick={handleWebsiteAdd}
-              className="btn btn-primary"
-              disabled={!websiteUrl}
-              style={{ width: '100%', fontSize: '12px' }}
-            >
-              <FontAwesomeIcon icon={faGlobe} style={{ marginRight: '6px' }} />
-              Add to Knowledge Base
-            </button>
           </div>
 
           {/* Storage Usage */}
@@ -416,7 +367,7 @@ const KnowledgeBase = () => {
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
                       <FontAwesomeIcon 
-                        icon={file.type === 'website' ? faGlobe : faFile} 
+                        icon={faFile} 
                         style={{ color: '#667eea', fontSize: '20px', flexShrink: 0 }} 
                       />
                       <div style={{ flex: 1, minWidth: 0 }}>

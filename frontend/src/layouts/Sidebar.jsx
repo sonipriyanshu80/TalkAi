@@ -10,7 +10,6 @@ import {
     faClipboardList,
     faChartBar,
     faCreditCard,
-    faKey,
     faCog,
     faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
@@ -59,8 +58,7 @@ const Sidebar = ({ isOpen, onClose, onHover }) => {
         {
             section: 'Account & Billing',
             items: [
-                { path: '/balance-plans', icon: faCreditCard, label: 'Balance & Plans' },
-                { path: '/api-access', icon: faKey, label: 'API Access' }
+                { path: '/balance-plans', icon: faCreditCard, label: 'Balance & Plans' }
             ]
         }
     ];

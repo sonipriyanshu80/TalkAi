@@ -15,9 +15,9 @@ import BulkCampaigns from './pages/dashboard/BulkCampaigns';
 import CallLogs from './pages/dashboard/CallLogs';
 import Analytics from './pages/dashboard/Analytics';
 import BalancePlans from './pages/dashboard/BalancePlans';
-import ApiAccess from './pages/dashboard/ApiAccess';
 import Settings from './pages/dashboard/Settings';
-import Documentation from './pages/dashboard/Documentation';
+// import ApiAccess from './pages/dashboard/ApiAccess'; // Future implementation
+// import Documentation from './pages/dashboard/Documentation'; // Future implementation
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -141,19 +141,19 @@ function App() {
                 <BalancePlans />
               </ProtectedRoute>
             } />
-            <Route path="/api-access" element={
+            {/* <Route path="/api-access" element={
               <ProtectedRoute>
                 <ApiAccess />
               </ProtectedRoute>
-            } />
+            } /> */}
+            {/* <Route path="/docs" element={
+              <ProtectedRoute>
+                <Documentation />
+              </ProtectedRoute>
+            } /> */}
             <Route path="/settings" element={
               <ProtectedRoute>
                 <Settings />
-              </ProtectedRoute>
-            } />
-            <Route path="/docs" element={
-              <ProtectedRoute>
-                <Documentation />
               </ProtectedRoute>
             } />
           </Routes>

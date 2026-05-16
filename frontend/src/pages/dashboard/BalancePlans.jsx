@@ -42,8 +42,9 @@ const BalancePlans = () => {
       setPlans(plansRes.data.plans);
       setTransactions(transactionsRes.data.transactions);
       
-      // Cache data
-      localStorage.setItem('balance', JSON.stringify(balanceRes.data));
+      // Update cache with fresh data
+      localStorage.setItem('cachedBalance', JSON.stringify(balanceRes.data));
+      localStorage.setItem('balanceLastFetched', Date.now().toString());
       localStorage.setItem('plans', JSON.stringify(plansRes.data.plans));
       localStorage.setItem('balanceCacheTime', Date.now().toString());
     } catch (error) {
@@ -84,6 +85,9 @@ const BalancePlans = () => {
             toast.success('Payment successful! Balance updated.');
             setShowTopupModal(false);
             setTopupAmount('');
+            // Clear balance cache so top bar refreshes
+            localStorage.removeItem('cachedBalance');
+            localStorage.removeItem('balanceLastFetched');
             fetchData();
           } catch (error) {
             toast.error('Payment verification failed');
@@ -129,6 +133,9 @@ const BalancePlans = () => {
               plan._id
             );
             toast.success(`Upgraded to ${plan.planName} plan!`);
+            // Clear balance cache so top bar refreshes
+            localStorage.removeItem('cachedBalance');
+            localStorage.removeItem('balanceLastFetched');
             fetchData();
           } catch (error) {
             toast.error('Payment verification failed');

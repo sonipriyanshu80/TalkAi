@@ -27,19 +27,32 @@ const DashboardLayout = ({ children }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fetch balance
+  // Fetch balance - only once on mount, stored in localStorage
   useEffect(() => {
     const fetchBalance = async () => {
       try {
         const { data } = await aiAPI.getBalance();
         setBalance(data);
+        localStorage.setItem('cachedBalance', JSON.stringify(data));
       } catch (error) {
         console.error('Failed to fetch balance:', error);
       }
     };
-    fetchBalance();
-    const interval = setInterval(fetchBalance, 60000);
-    return () => clearInterval(interval);
+
+    // Use cached balance immediately to avoid re-fetching on route change
+    const cached = localStorage.getItem('cachedBalance');
+    const lastFetched = localStorage.getItem('balanceLastFetched');
+    const isStale = !lastFetched || (Date.now() - parseInt(lastFetched)) > 5 * 60 * 1000; // 5 mins
+
+    if (cached) {
+      setBalance(JSON.parse(cached));
+    }
+
+    // Only fetch from API if no cache or cache is stale (5 mins)
+    if (!cached || isStale) {
+      fetchBalance();
+      localStorage.setItem('balanceLastFetched', Date.now().toString());
+    }
   }, []);
 
   return (
